@@ -7,6 +7,7 @@ import Loader from './ImageFinder/Loader'
 import Button from './ImageFinder/Button'
 import ImageGallery from './ImageFinder/ImageGallery'
 import Modal from './ImageFinder/Modal'
+import getAxios from './ImageFinder/getAxios'
 
 const App = () => {
   const [searchName, setSearchName] = useState('');
@@ -38,32 +39,33 @@ const App = () => {
   }
 
   useEffect(() => {
+    async function getImage() {
+      try {
+        const searchInfo = await getAxios(searchName, page)
+          if (searchInfo.data.hits.length !== 0) {
+            if (searchInfo.data.totalHits - 12 * page > 0) {
+              setOpenButtonLoadMore(true)
+            } else {
+              setOpenButtonLoadMore(false)
+            }
+          setArraySearch(prev => [...prev, ...searchInfo.data.hits])
+          setStatus('resolved')
+          return 
+          }
+        setStatus('rejected')
+        throw new Error("Sory, no result!");
+      } catch (error) {
+        setError(error)
+        setStatus('rejected')
+      }
+    }
+
     if (searchName==='') {
       return
     }
+
     setStatus('pending')
-    fetch(`https://pixabay.com/api/?q=${searchName}&page=${page}&key=31299915-b383d5b151d1dc364952a6f73&image_type=photo&orientation=horizontal&per_page=12`)
-      .then(response => response.json())
-      .then(searchInfo => {
-        if (searchInfo.hits.length !== 0) {
-          if (searchInfo.totalHits - 12 * page > 0) {
-            setOpenButtonLoadMore(true)
-          } else {
-            setOpenButtonLoadMore(false)
-          }
-          setArraySearch(prev => [...prev, ...searchInfo.hits])
-          setStatus('resolved')
-          return
-        }
-        setStatus('rejected')
-        return Promise.reject(
-          new Error("Sory, no result!")
-        )
-      })
-    .catch((error) => {
-      setError(error)
-      setStatus('rejected')
-      })
+    getImage()
   }, [searchName, page])
 
   if (status === 'idle') {
@@ -100,6 +102,5 @@ const App = () => {
     </>
   }
 }
-// }
 
 export default App;

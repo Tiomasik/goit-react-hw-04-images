@@ -5,7 +5,6 @@ const Modal = ({onClose, largeImageURL, tags}) => {
 
     useEffect(() => {
         const handleKeyDown = evt => {
-            console.log(evt.code)
         if (evt.code === 'Escape') {
             onClose()
         }
@@ -34,5 +33,6 @@ Modal.propTypes = {
     tags: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
 }
+
 export default Modal;
 
