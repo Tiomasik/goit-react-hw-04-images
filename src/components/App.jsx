@@ -14,7 +14,7 @@ const App = () => {
   const [arrayModal, setArrayModal] = useState([]);
   const [status, setStatus] = useState('idle');
   const [arraySearch, setArraySearch] = useState([]);
-  const [page, setPage] = useState('');
+  const [page, setPage] = useState(1);
   const [openModal, setOpenModal] = useState('');
   const [openButtonLoadMore, setOpenButtonLoadMore] = useState('');
   const [error, setError] = useState('');
@@ -97,7 +97,7 @@ const App = () => {
     return <>
       <Searchbar onSubmit={handlFormSubmit} />
       {!arraySearch.length && <h1 className='Error'>{error.message}</h1>}
-      {arraySearch.length && <ImageGallery choseItem={choseItem} listSearch={arraySearch} />}
+      {arraySearch.length !==0 && <ImageGallery choseItem={choseItem} listSearch={arraySearch} />}
       <ToastContainer autoClose={3000} />
     </>
   }
